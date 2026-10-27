@@ -4,7 +4,7 @@ metadata:
   name: devops-psu
   labels:
     app: devops-psu
-    release-date: RELEASE-DATE
+    release-date: s1793093395
   namespace: devops-psu
 spec:
   replicas: 1
@@ -16,12 +16,21 @@ spec:
       labels:
         app: devops-psu
         svc: frontend
-        release-date: RELEASE-DATE
+        release-date: s1793093395
     spec:
       containers:
         - name: devops-psu-server
-          image: andreykosberg/devops-psu:latest
-          imagePullPolicy: Always
+          # NOTE: this is a manual bootstrap of the release branch, done because
+          # release.yml (the real CD pipeline) cannot push to Docker Hub yet - the
+          # repo is missing the DOCKER_USERNAME/DOCKER_TOKEN secrets. Per the lecture's
+          # own fallback (slide 46), the image was built locally and loaded straight
+          # into minikube with `minikube image load`, so ArgoCD can still perform a
+          # real sync against this branch right now. Once the secrets are added and
+          # release.yml succeeds, it force-pushes this branch with the real Docker Hub
+          # image (andreykosberg/devops-psu:latest, imagePullPolicy Always) and ArgoCD's
+          # self-heal picks it up automatically - see README.md.
+          image: devops-psu:local
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
 ---
