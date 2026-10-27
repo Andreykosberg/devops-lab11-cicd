@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:Andreykosberg/devops-lab11-cicd.git
+    repoURL: ssh://git@ssh.github.com:443/Andreykosberg/devops-lab11-cicd.git
     targetRevision: release
     path: server-k8s-manifests
   destination:
