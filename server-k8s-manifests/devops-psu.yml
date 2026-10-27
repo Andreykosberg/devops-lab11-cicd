@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-psu
+  labels:
+    app: devops-psu
+    release-date: RELEASE-DATE
+  namespace: devops-psu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-psu
+  template:
+    metadata:
+      labels:
+        app: devops-psu
+        svc: frontend
+        release-date: RELEASE-DATE
+    spec:
+      containers:
+        - name: devops-psu-server
+          image: andreykosberg/devops-psu:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-devops
+  labels:
+    app: devops-psu
+  namespace: devops-psu
+spec:
+  type: LoadBalancer
+  selector:
+    app: devops-psu
+    svc: frontend
+  ports:
+    - port: 12345
+      targetPort: 8000
+  externalIPs:
+    - 10.0.2.15
